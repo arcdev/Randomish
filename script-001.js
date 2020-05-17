@@ -11,6 +11,18 @@ function pickEntry(list) {
   return list[idx];
 }
 
+function randomBoolean() {
+  return Boolean(random(0, 2));
+}
+
+function randomize(src, targetLength) {
+  var rtn = "";
+  while (rtn.length < targetLength) {
+    rtn += pickEntry(src);
+  }
+  return rtn;
+}
+
 function buildPerson() {
   const streetNum = random(1, 100000);
   const streetName = pickEntry(streets);
@@ -100,10 +112,6 @@ function buildAddress2() {
   };
 }
 
-function randomBoolean() {
-  return Boolean(random(0, 2));
-}
-
 function randomTaxId() {
   let area = random(1, 900);
   const group = random(1, 99 + 1);
@@ -113,14 +121,6 @@ function randomTaxId() {
     area = random(1, 900);
   }
   return [area, group, serial];
-}
-
-function randomize(src, targetLength) {
-  var rtn = "";
-  while (rtn.length < targetLength) {
-    rtn += pickEntry(src);
-  }
-  return rtn;
 }
 
 function btnGenerate_click() {
