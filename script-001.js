@@ -1,3 +1,7 @@
+const address2Likelihood = 0.33;
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const alphabetArray = alphabet.split(/.{0}/);
+
 function random(minInclusive, maxExclusive) {
   return Math.floor((Math.random() * maxExclusive) + minInclusive);
 }
@@ -10,6 +14,12 @@ function pickEntry(list) {
 function buildPerson() {
   const streetNum = random(1, 100000);
   const streetName = pickEntry(streets);
+  const address2 = buildAddress2();
+  let address2Formatted = null;
+  if (address2 !== null) {
+    address2Formatted = address2.space + " " + address2.id;
+  }
+
   const zipobj = pickEntry(zips);
 
   const phoneParts = [pickEntry(areaCodes).AreaCode, random(201, 799), random(0, 10000)];
@@ -19,19 +29,23 @@ function buildPerson() {
   const surname = pickEntry(surnames);
   const givenName = pickEntry(givenNames);
 
-  const addressFormatted = [
+  const formattedAddressLines = [
     givenName + " " + surname,
     streetNum + " " + streetName,
-    "",
-    zipobj.detail.split(", ")[0] + ", " + zipobj.detail.split(", ")[1] + " " + zipobj.name
-  ].join("\n");
+  ];
+
+  if (address2Formatted !== null) {
+    formattedAddressLines.push(address2Formatted);
+  }
+
+  formattedAddressLines.push(zipobj.detail.split(", ")[0] + ", " + zipobj.detail.split(", ")[1] + " " + zipobj.name);
 
   const result = {
     streetNum: streetNum,
     streetName: streetName,
     zipobj: zipobj,
     street1: streetNum + " " + streetName,
-    street2: "",
+    street2: address2Formatted,
     city: zipobj.detail.split(", ")[0],
     state: zipobj.detail.split(", ")[1],
     zip: zipobj.name,
@@ -44,17 +58,58 @@ function buildPerson() {
     taxIdParts: taxIdParts,
     taxId: taxIdParts.join(""),
     taxIdFormatted: taxIdParts.join("-"),
-    addressFormatted: addressFormatted
+    addressFormatted: formattedAddressLines.join("\n")
   }
   return result;
 }
 
+function buildAddress2() {
+  const diceRoll = random(1, 101);
+  if (diceRoll > address2Likelihood * 100) {
+    return null;
+  }
+
+  const chunk = pickEntry(address2Chunks);
+
+  const hasLetter = randomBoolean();
+  const startsWithLetter = randomBoolean();
+  const hasNumber = !hasLetter || randomBoolean();
+
+  const letterPart = hasLetter ? pickEntry(alphabetArray) : '';
+  const numberPart = hasNumber ? random(0, 999 + 1) : '';
+
+  const separatorPart = hasLetter && hasNumber && randomBoolean() ? '-' : '';
+
+  const parts = [];
+  if (startsWithLetter) {
+    parts.push(letterPart);
+    parts.push(separatorPart);
+    parts.push(numberPart);
+  }
+  else {
+    parts.push(numberPart);
+    parts.push(separatorPart);
+    parts.push(letterPart);
+  }
+
+  var idPart = parts.join('');
+
+  return {
+    "space": chunk,
+    "id": idPart
+  };
+}
+
+function randomBoolean() {
+  return Boolean(random(0, 2));
+}
+
 function randomTaxId() {
-  let area =  random(1, 900);
+  let area = random(1, 900);
   const group = random(1, 99 + 1);
   const serial = random(1, 9999 + 1)
 
-  if (area === 666){
+  if (area === 666) {
     area = random(1, 900);
   }
   return [area, group, serial];
@@ -95,6 +150,8 @@ function init() {
   $("#street-count").text(streets.length);
   $("#zip-count").text(zips.length);
   $("#area-code-count").text(areaCodes.length);
+  $("#address2-chunk-count").text(address2Chunks.length);
+  $("#address2-likelihood").text((address2Likelihood * 100));
 
   $("#btnGenerate").on("click", btnGenerate_click).click();
   $("button.copy").on("click", btnCopy_click);
