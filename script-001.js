@@ -157,4 +157,36 @@ function init() {
   $("button.copy").on("click", btnCopy_click);
 }
 
+function getRandomPerson(fcnFormat){
+  const p = buildPerson();
+  if (typeof fcnFormat === 'function'){
+    return fcnFormat(p);
+  }
+  return p;
+}
+
+function getRandomPeople(count, fcnFormat){
+  const rtn = [];
+  for(let i=0; i < count; i++){
+    const person = getRandomPerson(fcnFormat);
+    rtn.push(person);
+  }
+  return rtn;
+}
+
+function formatPersonInTabs0(p){
+  const parts = [
+    p.name,
+    p.street1,
+    p.street2,
+    p.city,
+    p.state,
+    p.zip,
+    p.phoneFormatted
+  ];
+  const rtn = parts.join('\t');
+  console.log(rtn);
+  return rtn;
+}
+
 $(init);
