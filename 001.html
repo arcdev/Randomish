@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Person</title>
+
+  <link href="style-001.css" rel="stylesheet" />
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+  <script src="data-pool-areaCodes.js"></script>
+  <script src="data-pool-givenNames.js"></script>
+  <script src="data-pool-streets.js"></script>
+  <script src="data-pool-surnames.js"></script>
+  <script src="data-pool-zips.js"></script>
+  <script src="script-001.js"></script>
+</head>
+
+<body>
+
+  <div>
+    <button id="btnGenerate" value="Generate">
+      Generate
+    </button>
+  </div>
+  <table>
+    <tr>
+      <td><label>Name</label></td>
+      <td id="name"></td>
+    </tr>
+    <tr>
+      <td><label>Street1</label></td>
+      <td id="street1"></td>
+    </tr>
+    <!--<tr><td><label>Street2</label></td><td id="street2"></td></tr>-->
+    <tr>
+      <td><label>City, State, Zip</label></td>
+      <td id="city-state-zip"></td>
+    </tr>
+    <tr>
+      <td><label>Phone</label></td>
+      <td id="phone"></td>
+    </tr>
+    <tr>
+      <td><label>TaxId</label></td>
+      <td id="taxid"></td>
+    </tr>
+    <tr>
+      <td><label>JSON Result</label></td>
+      <td><textarea disabled="disabled" readonly="readonly" cols="35" rows="6" id="json-result"></textarea><button class="copy" data-target="#json-result-2">Copy</button></td>
+    </tr>
+  </table>
+
+  <footer>
+    <b>Selected from a pool of...</b>
+    GiveNames: <span id="given-name-count"></span>
+    Surames: <span id="surname-count"></span>
+    Streets: <span id="street-count"></span>
+    Zips: <span id="zip-count"></span>
+    AreaCodes: <span id="area-code-count"></span>
+  </footer>
+
+
+</body>
+
+</html>

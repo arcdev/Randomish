@@ -1,0 +1,17 @@
+body{
+    font-family: Consolas, Courier New, Courier, monospace;
+    font-size: 10pt;
+  }
+  label{
+    font-weight:bold;
+  }
+  textarea{
+    white-space: pre;
+  }
+  tr td:first-of-type{
+    padding-right: 15px;
+  }
+  
+  footer{
+    margin-top: 40px;
+  }
