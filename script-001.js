@@ -1,6 +1,8 @@
 const address2Likelihood = 0.33;
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const alphabetArray = alphabet.split(/.{0}/);
+const alphabetArray = alphabet.split(/.{0}/g);
+const alphabetLowerCase = alphabet.toLowerCase();
+const alphabetLowerCaseArray = alphabetLowerCase.split(/.{0}/g);
 
 function random(minInclusive, maxExclusive) {
   return Math.floor((Math.random() * maxExclusive) + minInclusive);
@@ -16,8 +18,13 @@ function randomBoolean() {
 }
 
 function randomize(src, targetLength) {
+  let limit = 9999;
   var rtn = "";
   while (rtn.length < targetLength) {
+    limit--;
+    if (limit < 0){
+      throw "too many iterations of randomize()"
+    }
     rtn += pickEntry(src);
   }
   return rtn;
@@ -26,7 +33,7 @@ function randomize(src, targetLength) {
 function buildPerson() {
   const streetNum = random(1, 100000);
   const streetName = pickEntry(streets);
-  const address2 = buildAddress2();
+  const address2 = randomAddress2();
   let address2Formatted = null;
   if (address2 !== null) {
     address2Formatted = address2.space + " " + address2.id;
@@ -70,12 +77,21 @@ function buildPerson() {
     taxIdParts: taxIdParts,
     taxId: taxIdParts.join(""),
     taxIdFormatted: taxIdParts.join("-"),
-    addressFormatted: formattedAddressLines.join("\n")
+    addressFormatted: formattedAddressLines.join("\n"),
+    email: null
   }
+
+  result.email = randomEmail(result);
   return result;
 }
 
-function buildAddress2() {
+function randomEmail(person) {
+  const domain = randomize(alphabetLowerCaseArray, 8);
+  const tld = pickEntry(['com', 'net', 'org', 'cc', 'co']);
+  return `${person.givenName}.${person.surname}@${domain}.${tld}`;
+}
+
+function randomAddress2() {
   const diceRoll = random(1, 101);
   if (diceRoll > address2Likelihood * 100) {
     return null;
@@ -131,6 +147,7 @@ function btnGenerate_click() {
   $("#city-state-zip").text(d.city + ", " + d.state + " " + d.zip);
   $("#phone").text(d.phoneFormatted);
   $("#taxid").text(d.taxIdFormatted);
+  $("#email").text(d.email);
   $("#json-result").val(JSON.stringify(d, "", "  "));
 }
 
@@ -157,24 +174,24 @@ function init() {
   $("button.copy").on("click", btnCopy_click);
 }
 
-function getRandomPerson(fcnFormat){
+function getRandomPerson(fcnFormat) {
   const p = buildPerson();
-  if (typeof fcnFormat === 'function'){
+  if (typeof fcnFormat === 'function') {
     return fcnFormat(p);
   }
   return p;
 }
 
-function getRandomPeople(count, fcnFormat){
+function getRandomPeople(count, fcnFormat) {
   const rtn = [];
-  for(let i=0; i < count; i++){
+  for (let i = 0; i < count; i++) {
     const person = getRandomPerson(fcnFormat);
     rtn.push(person);
   }
   return rtn;
 }
 
-function formatPersonInTabs0(p){
+function formatPersonInTabs0(p) {
   const parts = [
     p.name,
     p.street1,
